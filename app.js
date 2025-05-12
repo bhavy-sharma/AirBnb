@@ -53,12 +53,20 @@ app.get("/listings", async (req, res) => {
 });
 
 
+// Ye hai Babu Bhaiya New Route
+app.get("/listings/new", async (req, res) => {
+    res.render("listings/new");
+});
+
+
+
 // Ye hai babu bhaiya Show Route
 app.get("/listings/:id", async (req, res) => {
     const { id } = req.params;
     const listing = await Listing.findById(id);
     res.render('listings/show.ejs', {listing});
 });
+
 
 
 
