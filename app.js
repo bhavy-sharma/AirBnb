@@ -1,29 +1,36 @@
+// All the Modules That use in this project Goes Here
 const express = require('express');
 const mongoose = require('mongoose');
 const Listing = require("./models/listing.js");
 const path = require("path");
 
-
-
+// Express App Initilize
 const app = express();
 
 
+// Ye hai babu bhaiya humare MiddleWares
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.use(express.urlencoded({ extended: true }));
 
 
+
+// DB se Connect krne ka Function
 main().then(() => {
     console.log("DB is Connected");
 }).catch(err => console.log(err));
-
 async function main() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/AirBnb');
+    await mongoose.connect('mongodb://127.0.0.1:27017/AirBnb');
 }
 
-app.get("/", (req,res) => {
+
+// Main Home Page Route
+app.get("/", (req, res) => {
     res.send("Bhavy Sharma")
 });
 
+
+// DB Testing Route
 // app.get("/testListing", async (req,res) => {
 //     let sampleListing = new Listing({
 //         title : "My Home",
@@ -31,21 +38,31 @@ app.get("/", (req,res) => {
 //         price : 12000,
 //         location : "Hansi, Haryana",
 //         country : "India"
+
 //     });
 //     await sampleListing.save();
 //     console.log("Sample was Saved");
 //     res.send("Successful");
-    
 // });
 
 
+// Ye hai Babu bhaiya Index Route
 app.get("/listings", async (req, res) => {
     const allListings = await Listing.find();
-    res.render("listings/index.ejs", {allListings});
+    res.render("listings/index.ejs", { allListings });
+});
+
+
+// Ye hai babu bhaiya Show Route
+app.get("/listings/:id", async (req, res) => {
+    const { id } = req.params;
+    const listing = await Listing.findById(id);
+    res.render('listings/show.ejs', {listing});
 });
 
 
 
+// App run kr rha hai Local Host 8080 Port pe
 app.listen(8080, () => {
     console.log("Server is running on Port 8080");
 });
