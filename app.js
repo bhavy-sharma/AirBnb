@@ -94,6 +94,12 @@ app.put("/listings/:id", async (req, res) => {
     res.redirect(`/listings/${id}`);
 });
 
+// Ye hai Babu Bhaiya Delete Route
+app.delete("/listings/:id", async (req, res) => {
+    const { id } = req.params;
+    await Listing.findByIdAndDelete(id);
+    res.redirect("/listings");
+});
 
 
 // App run kr rha hai Local Host 8080 Port pe
