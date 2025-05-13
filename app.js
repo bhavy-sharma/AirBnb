@@ -68,6 +68,14 @@ app.get("/listings/:id", async (req, res) => {
 });
 
 
+// Create Route hai ji ye
+app.post("/listings", async (req, res) => {
+    // let { title, description, price, location, country } = req.body;
+    let newListing = new Listing(req.body.listing);
+    await newListing.save();
+    res.redirect(`/listings`);
+});
+
 
 
 // App run kr rha hai Local Host 8080 Port pe
