@@ -1,0 +1,17 @@
+/* Navbar ki Styling */
+.navbar {
+    height: 5rem;
+
+}
+
+/* Icon Ki styling */
+.fa-building-columns{
+    color: #ff385c;
+    font-size: 2rem;
+}
+
+/* Navbar ke Option ki Styling */
+.nav-link{
+    color: #222222 !important;
+
+}
