@@ -90,5 +90,5 @@ body {
 }
 .card-img-overlay:hover{
     opacity: 0.2;
-    background-color: white;
+    background-color: pink;
 }
