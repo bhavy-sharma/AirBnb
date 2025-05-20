@@ -100,3 +100,14 @@ body {
     opacity: 0.2;
     background-color: pink;
 }
+
+/* Show page image */
+.show-img{
+    height: 30vh;
+}
+
+
+/* Show.ejs */
+.btns{
+    display: flex;
+}
