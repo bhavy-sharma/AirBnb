@@ -5,6 +5,7 @@ const Listing = require("./models/listing.js");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
+const wrapAsync = require("./utils/wrapAsync.js");
 
 
 // Express App Initilize
@@ -69,17 +70,22 @@ app.get("/listings/new", async (req, res) => {
 app.get("/listings/:id", async (req, res) => {
     const { id } = req.params;
     const listing = await Listing.findById(id);
-    res.render('listings/show.ejs', {listing});
+    res.render('listings/show.ejs', { listing });
 });
 
 
 // Create Route hai ji ye
-app.post("/listings", async (req, res) => {
-    // let { title, description, price, location, country } = req.body;
-    let newListing = new Listing(req.body.listing);
-    await newListing.save();
-    res.redirect(`/listings`);
-});
+app.post("/listings", wrapAsync(async (req, res, next) => {
+    
+        let newListing = new Listing(req.body.listing);
+        await newListing.save();
+        res.redirect(`/listings`);
+    
+        console.log(err);
+        res.status(500).send("Error creating listing");
+    }
+));
+
 
 
 // Ye hai Babu Bhaiya Edit Route
@@ -102,6 +108,13 @@ app.delete("/listings/:id", async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndDelete(id);
     res.redirect("/listings");
+});
+
+
+app.use((err, req, res, next) => {
+    const { status = 500 } = err;
+    if (!err.message) err.message = "Oh No, Something Went Wrong";
+    res.status(status).render("error.ejs", { err });
 });
 
 
