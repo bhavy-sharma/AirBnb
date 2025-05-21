@@ -4,7 +4,9 @@
         <div class="col-8 offset-2">
 
             <div class="card col-6 offset-3 text-center mt-3 p-0">
-                <h1>Listings Details </h1>
+                <h3>
+                    <%= listing.title %>
+                </h3>
                 <img src="<%= listing.image %>" class="card-img-top show-img" alt="listing Image">
                 <div class="card-body">
                     <p class="card-title">
@@ -40,4 +42,53 @@
 
 
         </div>
+        <div class="col-8 offset-3">
+            <br>
+            <br>
+            <hr>
+            <h4>Leave a comment</h4>
+            <form action="/listings/<%= listing._id %>/reviews" method="POST" novalidate class="needs-validation">
+                <div>
+                    <label for="rating" class="form-label">Rating : </label>
+                    <input type="range" name="review[rating]" id="rating" min="1" max="5" class="form-range">
+                </div>
+                <div class="mb-3">
+                    <label for="comment" class="form-label">Comment : </label>
+                    <textarea name="review[comment]" id="comment" cols="50" rows="7" class="form-control"></textarea>
+                    <br>
+                    <button type="submit" class="btn btn-outline-dark">Submit</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="mt-5">
+            <h4>Reviews</h4>
+            <% if (listing.reviews.length> 0) { %>
+                <ul class="list-group">
+                    <% listing.reviews.forEach(review=> { %>
+                        <li class="list-group-item">
+                            <strong>Rating:</strong>
+                            <%= review.rating %> ⭐<br>
+                                <strong>Comment:</strong>
+                                <%= review.comment %><br>
+                                    <small>
+                                        <%= review.createdAt.toDateString() %>
+                                    </small>
+                                    <br>
+                                    <br>
+                                    <form action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                            <br>
+                        </li>
+                       
+                            
+
+                        <% }) %>
+                </ul>
+                <% } else { %>
+                    <p>No reviews yet.</p>
+                    <% } %>
+        </div>
+
     </div>

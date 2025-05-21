@@ -6,6 +6,7 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
+const Review = require("./models/review.js");
 
 
 // Express App Initilize
@@ -69,21 +70,21 @@ app.get("/listings/new", async (req, res) => {
 // Ye hai babu bhaiya Show Route
 app.get("/listings/:id", async (req, res) => {
     const { id } = req.params;
-    const listing = await Listing.findById(id);
-    res.render('listings/show.ejs', { listing });
+    const listing = await Listing.findById(id).populate("reviews");
+    res.render("listings/show", { listing });
 });
 
 
 // Create Route hai ji ye
 app.post("/listings", wrapAsync(async (req, res, next) => {
-    
-        let newListing = new Listing(req.body.listing);
-        await newListing.save();
-        res.redirect(`/listings`);
-    
-        console.log(err);
-        res.status(500).send("Error creating listing");
-    }
+
+    let newListing = new Listing(req.body.listing);
+    await newListing.save();
+    res.redirect(`/listings`);
+
+    console.log(err);
+    res.status(500).send("Error creating listing");
+}
 ));
 
 
@@ -108,6 +109,28 @@ app.delete("/listings/:id", async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndDelete(id);
     res.redirect("/listings");
+});
+
+
+
+// Review ka Post Route
+app.post("/listings/:id/reviews", async (req, res) => {
+    const { id } = req.params;
+    const listing = await Listing.findById(id);
+    const review = new Review(req.body.review);
+    listing.reviews.push(review);
+    await review.save();
+    await listing.save();
+    res.redirect(`/listings/${id}`);
+});
+
+
+// Ye hai Babu Bhaiya Review ka Delete Route
+app.delete("/listings/:id/reviews/:reviewId", async (req, res) => {
+    const { id, reviewId } = req.params;
+    await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/listings/${id}`);
 });
 
 
