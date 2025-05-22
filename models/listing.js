@@ -9,7 +9,10 @@ const listingSchema = new Schema({
         require: true
     },
     description: String,
-    image: String,
+    image: {
+        type: String,
+        default: "https://images.unsplash.com/photo-1542718610-a1d656d1884c?w=500&auto=format&fit=crop"
+    },
     price: Number,
     location: String,
     country: String,

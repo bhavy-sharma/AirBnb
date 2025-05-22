@@ -8,12 +8,40 @@ const ejsMate = require("ejs-mate");
 // const wrapAsync = require("./utils/wrapAsync");
 const Review = require("./models/review.js");
 const listings = require("./routes/listing.js");
+const session = require("express-session");
+const flash = require("connect-flash");
 
 // Express App Initilize
 const app = express();
 
 
+
+const sessionOptions = {
+    secret : "Bhavy Sharma",
+    resave : false,
+    saveUninitialized : true,
+    cookie : {
+        httpOnly : true,
+        expires : Date.now() + 1000 * 60 * 60 * 24 * 7,
+        maxAge : 1000 * 60 * 60 * 24 * 7
+    }
+};
+
+app.use(session(sessionOptions));
+app.use(flash());
+
 // Ye hai babu bhaiya humare MiddleWares
+app.get("/", (req, res) => {
+    res.send("Bhavy Sharma")
+});
+
+app.use((req, res, next) => {
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    next();
+});
+
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
@@ -21,6 +49,11 @@ app.use(methodOverride('_method'));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/listings", listings);
+app.use((err, req, res, next) => {
+    console.error("Error:", err.message);
+    res.status(500).send("Something went wrong!");
+});
+
 
 
 // DB se Connect krne ka Function
@@ -33,10 +66,6 @@ async function main() {
 
 
 // Main Home Page Route
-app.get("/", (req, res) => {
-    res.send("Bhavy Sharma")
-});
-
 
 
 // Review ka Post Route
@@ -47,6 +76,7 @@ app.post("/listings/:id/reviews", async (req, res) => {
     listing.reviews.push(review);
     await review.save();
     await listing.save();
+     req.flash("success", "Successfully created a new review!");
     res.redirect(`/listings/${id}`);
 });
 
@@ -56,6 +86,7 @@ app.delete("/listings/:id/reviews/:reviewId", async (req, res) => {
     const { id, reviewId } = req.params;
     await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
+    req.flash("success", "Successfully deleted the review!");
     res.redirect(`/listings/${id}`);
 });
 
