@@ -5,9 +5,9 @@ const Listing = require("./models/listing.js");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-const wrapAsync = require("./utils/wrapAsync.js");
+// const wrapAsync = require("./utils/wrapAsync");
 const Review = require("./models/review.js");
-
+const listings = require("./routes/listing.js");
 
 // Express App Initilize
 const app = express();
@@ -20,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/listings", listings);
 
 
 // DB se Connect krne ka Function
@@ -34,81 +35,6 @@ async function main() {
 // Main Home Page Route
 app.get("/", (req, res) => {
     res.send("Bhavy Sharma")
-});
-
-
-// DB Testing Route
-// app.get("/testListing", async (req,res) => {
-//     let sampleListing = new Listing({
-//         title : "My Home",
-//         description : "My Home is Very Sweet Home and i Loved it...",
-//         price : 12000,
-//         location : "Hansi, Haryana",
-//         country : "India"
-
-//     });
-//     await sampleListing.save();
-//     console.log("Sample was Saved");
-//     res.send("Successful");
-// });
-
-
-// Ye hai Babu bhaiya Index Route
-app.get("/listings", async (req, res) => {
-    const allListings = await Listing.find();
-    res.render("listings/index.ejs", { allListings });
-});
-
-
-// Ye hai Babu Bhaiya New Route
-app.get("/listings/new", async (req, res) => {
-    res.render("listings/new");
-});
-
-
-
-// Ye hai babu bhaiya Show Route
-app.get("/listings/:id", async (req, res) => {
-    const { id } = req.params;
-    const listing = await Listing.findById(id).populate("reviews");
-    res.render("listings/show", { listing });
-});
-
-
-// Create Route hai ji ye
-app.post("/listings", wrapAsync(async (req, res, next) => {
-
-    let newListing = new Listing(req.body.listing);
-    await newListing.save();
-    res.redirect(`/listings`);
-
-    console.log(err);
-    res.status(500).send("Error creating listing");
-}
-));
-
-
-
-// Ye hai Babu Bhaiya Edit Route
-app.get("/listings/:id/edit", async (req, res) => {
-    const { id } = req.params;
-    const listing = await Listing.findById(id);
-    res.render("listings/edit.ejs", { listing });
-});
-
-
-// Ye hai Babu Bhaiya Update Route
-app.put("/listings/:id", async (req, res) => {
-    const { id } = req.params;
-    const updatedListing = await Listing.findByIdAndUpdate(id, req.body.listing);
-    res.redirect(`/listings/${id}`);
-});
-
-// Ye hai Babu Bhaiya Delete Route
-app.delete("/listings/:id", async (req, res) => {
-    const { id } = req.params;
-    await Listing.findByIdAndDelete(id);
-    res.redirect("/listings");
 });
 
 
