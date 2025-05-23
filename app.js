@@ -13,7 +13,8 @@ const passport = require("passport");
 const LocalStatergy = require("passport-local");
 const User = require("./models/user.js");
 const listings = require("./routes/listing.js");
-const userRouter = require("./routes/user.js")
+const userRouter = require("./routes/user.js");
+const { isLoggedIn, isReviewAuthor } = require('./middleware.js');
 
 
 // Express App Initilize
@@ -102,24 +103,22 @@ async function main() {
 
 
 
-// Main Home Page Route
 
 
-// Review ka Post Route
-app.post("/listings/:id/reviews", async (req, res) => {
+
+app.post("/listings/:id/reviews", isLoggedIn, async (req, res) => {
     const { id } = req.params;
     const listing = await Listing.findById(id);
     const review = new Review(req.body.review);
+    review.author = req.user._id;
     listing.reviews.push(review);
     await review.save();
     await listing.save();
-     req.flash("success", "Successfully created a new review!");
+    req.flash("success", "Successfully created a new review!");
     res.redirect(`/listings/${id}`);
 });
 
-
-// Ye hai Babu Bhaiya Review ka Delete Route
-app.delete("/listings/:id/reviews/:reviewId", async (req, res) => {
+app.delete("/listings/:id/reviews/:reviewId", isLoggedIn, isReviewAuthor, async (req, res) => {
     const { id, reviewId } = req.params;
     await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
