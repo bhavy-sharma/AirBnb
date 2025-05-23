@@ -1,6 +1,7 @@
 const express = require('express');
 const User = require("../models/user.js");
 const passport = require('passport');
+const Listing = require('../models/listing.js');
 
 const router = express.Router();
 
@@ -40,6 +41,16 @@ router.post("/login", passport.authenticate("local", {
     req.flash("success", "Welcome back!");
     res.redirect("/listings");
 });
+
+router.get("/logout", (req, res, next) => {
+    req.logout((err) => {
+        if(err){
+            return next(err);
+        }
+        req.flash("success", "Your Are Logged Out now");
+        res.redirect("/listings");
+    })
+})
 
 
 module.exports = router;
