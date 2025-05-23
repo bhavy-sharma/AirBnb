@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Listing = require('../models/listing');
-const wrapAsync = require("../utils/wrapAsync.js");
-const { isLoggedIn } = require("../middleware.js");
+const wrapAsync = require("./utils/wrapAsync.js");
+const { isLoggedIn, isOwner } = require("../middleware.js");
 
 // Index Route
 router.get("/", wrapAsync(async (req, res) => {
@@ -32,6 +32,7 @@ router.post("/", isLoggedIn, wrapAsync(async (req, res) => {
         delete req.body.listing.image;
     }
     let newListing = new Listing(req.body.listing);
+    newListing.owner = req.user._id;
     await newListing.save();
     req.flash("success", "Successfully created a new listing!");
     res.redirect(`/listings`);
@@ -49,7 +50,7 @@ router.get("/:id/edit", isLoggedIn, wrapAsync(async (req, res) => {
 }));
 
 // Update Route
-router.put("/:id", isLoggedIn, wrapAsync(async (req, res) => {
+router.put("/:id", isLoggedIn, isOwner ,wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndUpdate(id, req.body.listing);
     req.flash("success", "Successfully updated the listing!");
@@ -57,7 +58,7 @@ router.put("/:id", isLoggedIn, wrapAsync(async (req, res) => {
 }));
 
 // Delete Route
-router.delete("/:id", isLoggedIn, wrapAsync(async (req, res) => {
+router.delete("/:id", isLoggedIn, isOwner,wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Listing.findByIdAndDelete(id);
     req.flash("success", "Successfully deleted the listing!");
