@@ -7,9 +7,15 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 // const wrapAsync = require("./utils/wrapAsync");
 const Review = require("./models/review.js");
-const listings = require("./routes/listing.js");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStatergy = require("passport-local");
+const User = require("./models/user.js");
+
+const listings = require("./routes/listing.js");
+const userRouter = require("./routes/user.js")
+
 
 // Express App Initilize
 const app = express();
@@ -30,6 +36,13 @@ const sessionOptions = {
 app.use(session(sessionOptions));
 app.use(flash());
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStatergy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 // Ye hai babu bhaiya humare MiddleWares
 app.get("/", (req, res) => {
     res.send("Bhavy Sharma")
@@ -48,7 +61,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname, "public")));
+
 app.use("/listings", listings);
+app.use("/", userRouter);
 app.use((err, req, res, next) => {
     console.error("Error:", err.message);
     res.status(500).send("Something went wrong!");
@@ -63,6 +78,28 @@ main().then(() => {
 async function main() {
     await mongoose.connect('mongodb://127.0.0.1:27017/AirBnb');
 }
+
+
+// app.get("/demouser", async (req, res) => {
+//     let fakeUser = new User({
+//         email : "modiji@gmail.com",
+//         username : "modi ji"
+//     });
+//     let registerUser = await User.register(fakeUser, "password")
+//     res.send(registerUser);
+// })
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Main Home Page Route
