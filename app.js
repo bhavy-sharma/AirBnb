@@ -1,4 +1,5 @@
 // All the Modules That use in this project Goes Here
+require("dotenv").config();
 const express = require('express');
 const mongoose = require('mongoose');
 const Listing = require("./models/listing.js");
