@@ -54,13 +54,22 @@ router.get("/:id/edit", isLoggedIn, wrapAsync(async (req, res) => {
     res.render("listings/edit.ejs", { listing });
 }));
 
-// Update Route
-router.put("/:id", isLoggedIn, isOwner ,wrapAsync(async (req, res) => {
+router.put("/:id", isLoggedIn, isOwner, upload.single('listing[image]'), wrapAsync(async (req, res) => {
     const { id } = req.params;
-    await Listing.findByIdAndUpdate(id, req.body.listing);
+    let listing = await Listing.findByIdAndUpdate(id, req.body.listing);
+
+    // Only set image if a new file was uploaded
+    if (req.file) {
+        let url = req.file.path;
+        let filename = req.file.filename;
+        listing.image = { url, filename };
+        await listing.save();
+    }
+
     req.flash("success", "Successfully updated the listing!");
     res.redirect(`/listings/${id}`);
 }));
+
 
 // Delete Route
 router.delete("/:id", isLoggedIn, isOwner,wrapAsync(async (req, res) => {
