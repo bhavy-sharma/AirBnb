@@ -12,7 +12,6 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStatergy = require("passport-local");
 const User = require("./models/user.js");
-
 const listings = require("./routes/listing.js");
 const userRouter = require("./routes/user.js")
 
