@@ -1,3 +1,27 @@
+
+<style>
+  .btn-search {
+    background-color: #ff385c;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 0 1rem 0 1rem;
+    /* width: 150px; */
+  }
+
+  .btn-search i {
+    display: inline;
+    margin-right: 4px;
+  }
+  .search-input {
+    width: 300px;
+    border-radius: 25px;
+    padding: 0.5rem;
+    border: 1px solid #ced4da;
+    text-align: center;
+  }
+</style>
+
 <nav class="navbar navbar-expand-md bg-light border-bottom sticky-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="/listings"><i class="fa-solid fa-building-columns"></i></a>
@@ -10,6 +34,17 @@
     <a class="nav-link" href="/listings">Explore</a>
   </div>
 
+
+  <div>
+    <form class="d-flex" role="search" action="/listings/search" method="GET">
+      <input class="form-control me-2 search-input" type="search" name="q" placeholder="Search Destinatation" aria-label="Search">
+      <button class="btn btn-search" type="submit">
+      <i class="fa-solid fa-magnifying-glass"></i> Search
+      </button>
+    </form>
+    </div>
+
+
   <!-- Right side nav items -->
   <div class="navbar-nav ms-auto">
     <a class="nav-link" href="/listings/new">AirBnb your home</a>
@@ -18,8 +53,8 @@
       <a class="nav-link" href="/login"><b>Login</b></a>
 
     <%} else { %>
-      <a class="nav-link" href="/profile">Profile</a>
-      <a class="nav-link" href="/listings/mylistings">My Listings</a>
+      <!-- <a class="nav-link" href="/profile">Profile</a> -->
+      <!-- <a class="nav-link" href="/listings/mylistings">My Listings</a> -->
       <a class="nav-link" href="/logout">Logout</a>
       <% } %>
   </div>

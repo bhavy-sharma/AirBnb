@@ -9,6 +9,7 @@ const ejsMate = require("ejs-mate");
 // const wrapAsync = require("./utils/wrapAsync");
 const Review = require("./models/review.js");
 const session = require("express-session");
+const MongoStore = require('connect-mongo');
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStatergy = require("passport-local");
@@ -21,9 +22,23 @@ const { isLoggedIn, isReviewAuthor } = require('./middleware.js');
 // Express App Initilize
 const app = express();
 
+const db_URL = process.env.ATLASDB_URL;
 
+
+const store = MongoStore.create({ mongoUrl: db_URL,
+    crypto : {
+        secret : "Bhavy Sharma"
+    },
+    touchAfter : 24 * 3600,
+
+ });
+
+ store.on("error", (err) => {
+    console.log("Error in Mongo Session Store ", err);
+ })
 
 const sessionOptions = {
+    store,
     secret : "Bhavy Sharma",
     resave : false,
     saveUninitialized : true,
@@ -33,6 +48,9 @@ const sessionOptions = {
         maxAge : 1000 * 60 * 60 * 24 * 7
     }
 };
+
+
+
 
 app.use(session(sessionOptions));
 app.use(flash());
@@ -73,12 +91,14 @@ app.use((err, req, res, next) => {
 
 
 
+
 // DB se Connect krne ka Function
 main().then(() => {
     console.log("DB is Connected");
 }).catch(err => console.log(err));
 async function main() {
-    await mongoose.connect('mongodb://127.0.0.1:27017/AirBnb');
+    
+    await mongoose.connect(db_URL);
 }
 
 
