@@ -93,20 +93,6 @@ async function main() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 app.post("/listings/:id/reviews", isLoggedIn, async (req, res) => {
     const { id } = req.params;
     const listing = await Listing.findById(id);
