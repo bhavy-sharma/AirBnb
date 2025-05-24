@@ -44,9 +44,9 @@ passport.use(new LocalStatergy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// Ye hai babu bhaiya humare MiddleWares
+
 app.get("/", (req, res) => {
-    res.send("Bhavy Sharma")
+    res.redirect("/listings")
 });
 
 app.use((req, res, next) => {

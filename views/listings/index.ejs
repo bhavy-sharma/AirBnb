@@ -1,10 +1,75 @@
 <% layout('layouts/boilerplate') -%>
 
+<style>
+    #filters {
+        display: flex;
+        justify-content: center;
+        margin-top: 1rem;
+        flex-wrap: wrap;
+    }
+    .filter {
+        text-align: center;
+        align-items: center;
+        margin: 0 1rem;
+        padding: 0.5rem 1rem;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        cursor: pointer;
+        opacity: 0.7;
+    }
+    .filter:hover{
+        opacity: 1;
+    }
+    .filter div {
+        margin-right: 0.5rem;
+        align-items: center;
+        color: #007bff;
+    }
+</style>
+        <!-- <h1>All Listings</h1> -->
+         <div id="filters">
+                <div class="filter">
+                    <div><i class="fa-solid fa-fire"></i></div>
+                    <span>Popular</span>
+                </div>
+                
+                <div class="filter">
+                    <div><i class="fa-solid fa-bed"></i></div>
+                    <span>Rooms</span>
+                </div>
 
-    <body>
-        <h1>All Listings</h1>
+                <div class="filter">
+                    <div><i class="fa-solid fa-city"></i></div>
+                    <span>Iconic Cities</span>
+                </div>
 
-        <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4">
+                <div class="filter">
+                    <div><i class="fa-solid fa-person-snowboarding"></i></div>
+                    <span>Surfing</span>
+                </div>
+                <div class="filter">
+                    <div><i class="fa-solid fa-house-chimney-user"></i></div>
+                    <span>Cabins</span>
+                </div>
+
+                <div class="filter">
+                    <div><i class="fa-solid fa-tower-observation"></i></div>
+                    <span>Amazing View</span>
+                </div>
+
+                <div class="filter">
+                    <div><i class="fa-solid fa-wheat-awn"></i></div>
+                    <span>Farm</span>
+                </div>
+
+                <div class="filter">
+                    <div><i class="fa-solid fa-mountain-city"></i></div>
+                    <span>Farm</span>
+                </div>
+
+         </div>
+
+        <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4 mt-3" >
             <% for(let listing of allListings) { %>
                 <div class="col">
                     <a href="/listings/<%= listing._id %>" class="listing-link">
@@ -24,5 +89,3 @@
                 </div>
                 <% } %>
         </div>
-
-    </body>
